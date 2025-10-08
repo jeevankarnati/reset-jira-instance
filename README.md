@@ -14,6 +14,8 @@ This tool systematically removes all:
 - **Screen Schemes** - All screen schemes
 - **Screens** - All screens
 - **Custom Fields** - All custom fields
+- **Statuses** - All statuses
+- **Issue Types** - All issue types
 
 ## Prerequisites
 
@@ -69,7 +71,7 @@ npm start
 The tool will:
 
 1. Connect to your Jira instance using the provided credentials
-2. Systematically delete all projects, workflows, schemes, screens, and custom fields
+2. Systematically delete all projects, workflows, schemes, screens, custom fields, statuses, and issue types
 3. Display progress and results in the console
 
 ## Important Notes
@@ -107,6 +109,8 @@ The project is structured with individual service modules for each type of Jira 
 - `services/screenScheme.ts` - Screen scheme management
 - `services/screen.ts` - Screen management
 - `services/customField.ts` - Custom field management
+- `services/status.ts` - Status management
+- `services/issuetype.ts` - Issue type management
 
 ## License
 

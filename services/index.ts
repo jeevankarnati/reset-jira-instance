@@ -6,6 +6,8 @@ import { resetIssueTypeScreenSchemes } from "./issueTypeScreenScheme";
 import { resetScreenSchemes } from "./screenScheme";
 import { resetScreens } from "./screen";
 import { resetCustomFields } from "./customField";
+import { resetStatuses } from "./status";
+import { resetIssueTypes } from "./issuetype";
 
 export {
   resetAllProjects,
@@ -16,4 +18,6 @@ export {
   resetScreenSchemes,
   resetScreens,
   resetCustomFields,
+  resetStatuses,
+  resetIssueTypes,
 };

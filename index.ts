@@ -9,6 +9,8 @@ import {
   resetScreenSchemes,
   resetScreens,
   resetCustomFields,
+  resetStatuses,
+  resetIssueTypes,
 } from "./services";
 
 const jiraClient = new JiraClient({
@@ -29,6 +31,8 @@ const resetJiraInstance = async () => {
   await resetScreenSchemes(jiraClient);
   await resetScreens(jiraClient);
   await resetCustomFields(jiraClient);
+  await resetStatuses(jiraClient);
+  await resetIssueTypes(jiraClient);
 };
 
 resetJiraInstance();
