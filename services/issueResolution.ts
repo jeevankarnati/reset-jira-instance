@@ -65,6 +65,10 @@ export const resetIssueResolutions = async (
     return;
   }
 
+  // Find the "Done" resolution to use as replacement
+  const doneResolution = allResolutions.find((res) => res.name === "Done");
+  const replaceWithId = doneResolution?.id || "";
+
   console.log("Starting issue resolution deletion process...");
   let successCount = 0;
   let errorCount = 0;
@@ -77,11 +81,11 @@ export const resetIssueResolutions = async (
     );
 
     // When deleting resolutions, we need to specify a replacement resolution
-    // Since we're deleting all, we'll use an empty string or null replacement
+    // Use the "Done" resolution ID as replacement
     const deleteResolution = await jiraClient.issueResolutions.deleteResolution(
       {
         id: resolution.id!,
-        replaceWith: "", // Empty string means no replacement
+        replaceWith: replaceWithId,
       }
     );
 
