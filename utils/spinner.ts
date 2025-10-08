@@ -20,17 +20,17 @@ export class Spinner {
 
   success(message: string) {
     this.stop();
-    console.log(`\r✅ ${message}`);
+    console.log(`\r\x1b[32m✓\x1b[0m ${message}`);
   }
 
   error(message: string) {
     this.stop();
-    console.log(`\r❌ ${message}`);
+    console.log(`\r\x1b[31m✗\x1b[0m ${message}`);
   }
 
   info(message: string) {
     this.stop();
-    console.log(`\rℹ️  ${message}`);
+    console.log(`\r\x1b[34mℹ\x1b[0m ${message}`);
   }
 
   stop() {
