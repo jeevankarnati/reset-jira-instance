@@ -79,7 +79,7 @@ export const resetCustomFields = async (jiraClient: DefaultJiraClientType) => {
       id: customField.id!,
     });
     if (deleteCustomField.success) {
-      spinner.success(
+      spinner.successDeletion(
         `Custom field ${index + 1} deleted successfully: ${customField.name}`
       );
       successCount++;

@@ -82,7 +82,7 @@ export const resetIssueTypeSchemes = async (
         issueTypeSchemeId: Number(issueTypeScheme.id!),
       });
     if (deleteIssueTypeScheme.success) {
-      spinner.success(
+      spinner.successDeletion(
         `Issue type scheme ${index + 1} deleted successfully: ${
           issueTypeScheme.name
         }`

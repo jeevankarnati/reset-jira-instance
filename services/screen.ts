@@ -73,7 +73,7 @@ export const resetScreens = async (jiraClient: DefaultJiraClientType) => {
       screenId: screen.id!,
     });
     if (deleteScreen.success) {
-      spinner.success(
+      spinner.successDeletion(
         `Screen ${index + 1} deleted successfully: ${screen.name}`
       );
       successCount++;

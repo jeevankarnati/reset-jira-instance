@@ -92,7 +92,7 @@ export const resetIssueTypeScreenSchemes = async (
         issueTypeScreenSchemeId: issueTypeScreenScheme.id!,
       });
     if (deleteIssueTypeScreenScheme.success) {
-      spinner.success(
+      spinner.successDeletion(
         `Issue type screen scheme ${index + 1} deleted successfully: ${
           issueTypeScreenScheme.name
         }`

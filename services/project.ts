@@ -43,7 +43,7 @@ export const resetAllProjects = async (jiraClient: DefaultJiraClientType) => {
         enableUndo: false,
       });
       if (deleteProject.success) {
-        spinner.success(
+        spinner.successDeletion(
           `Project ${index + 1} deleted successfully: ${project.name} (${
             project.key
           })`

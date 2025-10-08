@@ -75,7 +75,7 @@ export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
       entityId: workflow.id.entityId!,
     });
     if (deleteWorkflow.success) {
-      spinner.success(
+      spinner.successDeletion(
         `Workflow ${index + 1} deleted successfully: ${workflow.id.name}`
       );
       successCount++;

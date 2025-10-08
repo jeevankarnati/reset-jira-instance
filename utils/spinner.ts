@@ -57,6 +57,19 @@ export class Spinner {
     this.lastOutputLength = 0;
   }
 
+  successDeletion(message: string) {
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+    // Move to start, clear entire line (direction 0 = entire line), show cursor
+    process.stdout.cursorTo(0);
+    process.stdout.clearLine(0);
+    process.stdout.write("\x1b[?25h"); // Show cursor
+    process.stdout.write(`\x1b[32m✓\x1b[32m ${message}\x1b[0m\n`);
+    this.lastOutputLength = 0;
+  }
+
   error(message: string) {
     if (this.interval) {
       clearInterval(this.interval);

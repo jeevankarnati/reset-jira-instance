@@ -80,7 +80,7 @@ export const resetWorkflowSchemes = async (
         id: workflowScheme.id!,
       });
     if (deleteWorkflowScheme.success) {
-      spinner.success(
+      spinner.successDeletion(
         `Workflow scheme ${index + 1} deleted successfully: ${
           workflowScheme.name
         }`

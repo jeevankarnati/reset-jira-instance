@@ -78,7 +78,7 @@ export const resetScreenSchemes = async (jiraClient: DefaultJiraClientType) => {
         screenSchemeId: screenScheme.id?.toString()!,
       });
     if (deleteScreenScheme.success) {
-      spinner.success(
+      spinner.successDeletion(
         `Screen scheme ${index + 1} deleted successfully: ${screenScheme.name}`
       );
       successCount++;
