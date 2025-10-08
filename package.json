@@ -1,0 +1,12 @@
+{
+  "name": "reset-jira-instance",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run index.ts"
+  },
+  "dependencies": {
+    "@narthia/jira-client": "^0.3.1"
+  }
+}
