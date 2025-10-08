@@ -8,6 +8,9 @@ import { resetScreens } from "./screen";
 import { resetCustomFields } from "./customField";
 import { resetStatuses } from "./status";
 import { resetIssueTypes } from "./issuetype";
+import { resetFieldConfigurationSchemes } from "./issueFieldConfigurationSCheme";
+import { resetFieldConfigurations } from "./issueFieldConfiguration";
+import { resetIssueResolutions } from "./issueResolution";
 
 export {
   resetAllProjects,
@@ -20,4 +23,7 @@ export {
   resetCustomFields,
   resetStatuses,
   resetIssueTypes,
+  resetFieldConfigurations,
+  resetFieldConfigurationSchemes,
+  resetIssueResolutions,
 };

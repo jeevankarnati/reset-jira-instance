@@ -11,6 +11,9 @@ import {
   resetCustomFields,
   resetStatuses,
   resetIssueTypes,
+  resetFieldConfigurations,
+  resetFieldConfigurationSchemes,
+  resetIssueResolutions,
 } from "./services";
 
 const jiraClient = new JiraClient({
@@ -33,6 +36,9 @@ const resetJiraInstance = async () => {
   await resetCustomFields(jiraClient);
   await resetStatuses(jiraClient);
   await resetIssueTypes(jiraClient);
+  await resetFieldConfigurationSchemes(jiraClient);
+  await resetFieldConfigurations(jiraClient);
+  await resetIssueResolutions(jiraClient);
 };
 
 resetJiraInstance();
