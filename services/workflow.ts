@@ -1,16 +1,24 @@
 import { DefaultJiraClientType } from "@narthia/jira-client";
+import { createSpinner } from "../utils/spinner";
 
 export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
-  console.log("Deleting workflows...");
+  const spinner = createSpinner();
+
+  spinner.start("Starting workflow reset process...");
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  spinner.success("Workflow reset process started");
+
   const maxResults = 100;
   const startAt = 0;
 
+  spinner.start("Fetching workflows (first page)...");
   const firstPage = await jiraClient.workflows.getWorkflowsPaginated({
     maxResults,
     startAt,
   });
 
   if (!firstPage.success) {
+    console.error("❌ ERROR: Failed to fetch workflows:", firstPage.error);
     return firstPage;
   }
 
@@ -21,6 +29,10 @@ export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
 
   if (total > firstValues.length) {
     const totalPages = Math.ceil(total / maxResults);
+    console.log(
+      `🔄 LOADING: Fetching remaining ${totalPages - 1} pages of workflows...`
+    );
+
     const pageIndexes = Array.from({ length: totalPages - 1 }, (_, i) => i + 1);
     const pagePromises = pageIndexes.map((pageIndex) =>
       jiraClient.workflows.getWorkflowsPaginated({
@@ -31,23 +43,58 @@ export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
+        console.error("❌ ERROR: Failed to fetch workflow page:", page.error);
         return page;
       }
       allWorkflows = allWorkflows.concat(page.data?.values ?? []);
     }
   }
-  console.log("Workflows fetched:", allWorkflows.length);
+
+  console.log(
+    `✅ SUCCESS: Workflows fetched successfully (${allWorkflows.length} workflows found)`
+  );
+
+  if (allWorkflows.length === 0) {
+    console.log("ℹ️  INFO: No workflows found to delete");
+    return;
+  }
+
+  console.log("🔄 LOADING: Starting workflow deletion process...");
+  let successCount = 0;
+  let errorCount = 0;
+
   for (const [index, workflow] of allWorkflows.entries()) {
-    console.log(`Deleting workflow ${index + 1}:`, workflow.id.name);
+    console.log(
+      `🔄 LOADING: Deleting workflow ${index + 1}/${allWorkflows.length}: ${
+        workflow.id.name
+      }`
+    );
     const deleteWorkflow = await jiraClient.workflows.deleteInactiveWorkflow({
       entityId: workflow.id.entityId!,
     });
     if (deleteWorkflow.success) {
-      console.log(`Workflow ${index + 1} deleted:`, workflow.id.name);
+      console.log(
+        `✅ SUCCESS: Workflow ${index + 1} deleted successfully: ${
+          workflow.id.name
+        }`
+      );
+      successCount++;
     } else {
-      console.error("Failed to delete workflow:", deleteWorkflow.error);
+      console.error(
+        `❌ ERROR: Failed to delete workflow ${index + 1}: ${
+          workflow.id.name
+        } - ${deleteWorkflow.error}`
+      );
+      errorCount++;
     }
   }
 
-  console.log("Workflows deleted");
+  console.log(
+    `📊 SUMMARY: Workflow deletion completed - ${successCount} successful, ${errorCount} failed`
+  );
+  if (errorCount === 0) {
+    console.log("🎉 SUCCESS: All workflows deleted successfully!");
+  } else {
+    console.warn(`⚠️  WARNING: ${errorCount} workflows failed to delete`);
+  }
 };
