@@ -34,8 +34,8 @@ export const resetIssueTypeScreenSchemes = async (
 
   if (total > firstValues.length) {
     const totalPages = Math.ceil(total / maxResults);
-    console.log(
-      `🔄 LOADING: Fetching remaining ${
+    spinner.start(
+      `Fetching remaining ${
         totalPages - 1
       } pages of issue type screen schemes...`
     );
@@ -50,9 +50,8 @@ export const resetIssueTypeScreenSchemes = async (
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
-        console.error(
-          "❌ ERROR: Failed to fetch issue type screen scheme page:",
-          page.error
+        spinner.error(
+          `Failed to fetch issue type screen scheme page: ${page.error}`
         );
         return page;
       }
@@ -62,18 +61,16 @@ export const resetIssueTypeScreenSchemes = async (
     }
   }
 
-  console.log(
-    `✅ SUCCESS: Issue type screen schemes fetched successfully (${allIssueTypeScreenSchemes.length} issue type screen schemes found)`
+  spinner.success(
+    `Issue type screen schemes fetched successfully (${allIssueTypeScreenSchemes.length} issue type screen schemes found)`
   );
 
   if (allIssueTypeScreenSchemes.length === 0) {
-    console.log("ℹ️  INFO: No issue type screen schemes found to delete");
+    spinner.info("No issue type screen schemes found to delete");
     return;
   }
 
-  console.log(
-    "🔄 LOADING: Starting issue type screen scheme deletion process..."
-  );
+  console.log("Starting issue type screen scheme deletion process...");
   let successCount = 0;
   let errorCount = 0;
 
@@ -81,8 +78,8 @@ export const resetIssueTypeScreenSchemes = async (
     index,
     issueTypeScreenScheme,
   ] of allIssueTypeScreenSchemes.entries()) {
-    console.log(
-      `🔄 LOADING: Deleting issue type screen scheme ${index + 1}/${
+    spinner.start(
+      `Deleting issue type screen scheme ${index + 1}/${
         allIssueTypeScreenSchemes.length
       }: ${issueTypeScreenScheme.name}`
     );
@@ -91,15 +88,15 @@ export const resetIssueTypeScreenSchemes = async (
         issueTypeScreenSchemeId: issueTypeScreenScheme.id!,
       });
     if (deleteIssueTypeScreenScheme.success) {
-      console.log(
-        `✅ SUCCESS: Issue type screen scheme ${
-          index + 1
-        } deleted successfully: ${issueTypeScreenScheme.name}`
+      spinner.success(
+        `Issue type screen scheme ${index + 1} deleted successfully: ${
+          issueTypeScreenScheme.name
+        }`
       );
       successCount++;
     } else {
-      console.error(
-        `❌ ERROR: Failed to delete issue type screen scheme ${index + 1}: ${
+      spinner.error(
+        `Failed to delete issue type screen scheme ${index + 1}: ${
           issueTypeScreenScheme.name
         } - ${deleteIssueTypeScreenScheme.error}`
       );

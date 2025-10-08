@@ -5,6 +5,9 @@ export class Spinner {
   private currentFrame = 0;
 
   start(message: string) {
+    // Stop any existing spinner first
+    this.stop();
+
     this.message = message;
     this.currentFrame = 0;
 
@@ -19,18 +22,33 @@ export class Spinner {
   }
 
   success(message: string) {
-    this.stop();
-    console.log(`\r\x1b[32m✓\x1b[0m ${message}`);
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+    process.stdout.write("\r\x1b[K"); // Clear the line
+    process.stdout.write("\x1b[?25h"); // Show cursor
+    console.log(`\x1b[32m✓\x1b[0m ${message}`);
   }
 
   error(message: string) {
-    this.stop();
-    console.log(`\r\x1b[31m✗\x1b[0m ${message}`);
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+    process.stdout.write("\r\x1b[K"); // Clear the line
+    process.stdout.write("\x1b[?25h"); // Show cursor
+    console.log(`\x1b[31m✗\x1b[0m ${message}`);
   }
 
   info(message: string) {
-    this.stop();
-    console.log(`\r\x1b[34mℹ\x1b[0m ${message}`);
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+    process.stdout.write("\r\x1b[K"); // Clear the line
+    process.stdout.write("\x1b[?25h"); // Show cursor
+    console.log(`\x1b[34mℹ\x1b[0m ${message}`);
   }
 
   stop() {
@@ -38,8 +56,10 @@ export class Spinner {
       clearInterval(this.interval);
       this.interval = null;
     }
-    process.stdout.write("\x1b[?25h"); // Show cursor
-    process.stdout.write("\r\x1b[K"); // Clear line
+    // Clear the current line completely
+    process.stdout.write("\r\x1b[K");
+    // Show cursor
+    process.stdout.write("\x1b[?25h");
   }
 }
 

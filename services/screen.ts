@@ -18,7 +18,7 @@ export const resetScreens = async (jiraClient: DefaultJiraClientType) => {
   });
 
   if (!firstPage.success) {
-    console.error("❌ ERROR: Failed to fetch screens:", firstPage.error);
+    spinner.error(`Failed to fetch screens: ${firstPage.error}`);
     return firstPage;
   }
 
@@ -29,9 +29,7 @@ export const resetScreens = async (jiraClient: DefaultJiraClientType) => {
 
   if (total > firstValues.length) {
     const totalPages = Math.ceil(total / maxResults);
-    console.log(
-      `🔄 LOADING: Fetching remaining ${totalPages - 1} pages of screens...`
-    );
+    spinner.start(`Fetching remaining ${totalPages - 1} pages of screens...`);
 
     const pageIndexes = Array.from({ length: totalPages - 1 }, (_, i) => i + 1);
     const pagePromises = pageIndexes.map((pageIndex) =>
@@ -43,43 +41,41 @@ export const resetScreens = async (jiraClient: DefaultJiraClientType) => {
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
-        console.error("❌ ERROR: Failed to fetch screen page:", page.error);
+        spinner.error(`Failed to fetch screen page: ${page.error}`);
         return page;
       }
       allScreens = allScreens.concat(page.data?.values ?? []);
     }
   }
 
-  console.log(
-    `✅ SUCCESS: Screens fetched successfully (${allScreens.length} screens found)`
+  spinner.success(
+    `Screens fetched successfully (${allScreens.length} screens found)`
   );
 
   if (allScreens.length === 0) {
-    console.log("ℹ️  INFO: No screens found to delete");
+    spinner.info("No screens found to delete");
     return;
   }
 
-  console.log("🔄 LOADING: Starting screen deletion process...");
+  console.log("Starting screen deletion process...");
   let successCount = 0;
   let errorCount = 0;
 
   for (const [index, screen] of allScreens.entries()) {
-    console.log(
-      `🔄 LOADING: Deleting screen ${index + 1}/${allScreens.length}: ${
-        screen.name
-      }`
+    spinner.start(
+      `Deleting screen ${index + 1}/${allScreens.length}: ${screen.name}`
     );
     const deleteScreen = await jiraClient.screens.deleteScreen({
       screenId: screen.id!,
     });
     if (deleteScreen.success) {
-      console.log(
-        `✅ SUCCESS: Screen ${index + 1} deleted successfully: ${screen.name}`
+      spinner.success(
+        `Screen ${index + 1} deleted successfully: ${screen.name}`
       );
       successCount++;
     } else {
-      console.error(
-        `❌ ERROR: Failed to delete screen ${index + 1}: ${screen.name} - ${
+      spinner.error(
+        `Failed to delete screen ${index + 1}: ${screen.name} - ${
           deleteScreen.error
         }`
       );

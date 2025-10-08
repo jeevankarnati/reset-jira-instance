@@ -18,7 +18,7 @@ export const resetScreenSchemes = async (jiraClient: DefaultJiraClientType) => {
   });
 
   if (!firstPage.success) {
-    console.error("❌ ERROR: Failed to fetch screen schemes:", firstPage.error);
+    spinner.error(`Failed to fetch screen schemes: ${firstPage.error}`);
     return firstPage;
   }
 
@@ -29,10 +29,8 @@ export const resetScreenSchemes = async (jiraClient: DefaultJiraClientType) => {
 
   if (total > firstValues.length) {
     const totalPages = Math.ceil(total / maxResults);
-    console.log(
-      `🔄 LOADING: Fetching remaining ${
-        totalPages - 1
-      } pages of screen schemes...`
+    spinner.start(
+      `Fetching remaining ${totalPages - 1} pages of screen schemes...`
     );
 
     const pageIndexes = Array.from({ length: totalPages - 1 }, (_, i) => i + 1);
@@ -45,51 +43,46 @@ export const resetScreenSchemes = async (jiraClient: DefaultJiraClientType) => {
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
-        console.error(
-          "❌ ERROR: Failed to fetch screen scheme page:",
-          page.error
-        );
+        spinner.error(`Failed to fetch screen scheme page: ${page.error}`);
         return page;
       }
       allScreenSchemes = allScreenSchemes.concat(page.data?.values ?? []);
     }
   }
 
-  console.log(
-    `✅ SUCCESS: Screen schemes fetched successfully (${allScreenSchemes.length} screen schemes found)`
+  spinner.success(
+    `Screen schemes fetched successfully (${allScreenSchemes.length} screen schemes found)`
   );
 
   if (allScreenSchemes.length === 0) {
-    console.log("ℹ️  INFO: No screen schemes found to delete");
+    spinner.info("No screen schemes found to delete");
     return;
   }
 
-  console.log("🔄 LOADING: Starting screen scheme deletion process...");
+  console.log("Starting screen scheme deletion process...");
   let successCount = 0;
   let errorCount = 0;
 
   for (const [index, screenScheme] of allScreenSchemes.entries()) {
-    console.log(
-      `🔄 LOADING: Deleting screen scheme ${index + 1}/${
-        allScreenSchemes.length
-      }: ${screenScheme.name}`
+    spinner.start(
+      `Deleting screen scheme ${index + 1}/${allScreenSchemes.length}: ${
+        screenScheme.name
+      }`
     );
     const deleteScreenScheme =
       await jiraClient.screenSchemes.deleteScreenScheme({
         screenSchemeId: screenScheme.id?.toString()!,
       });
     if (deleteScreenScheme.success) {
-      console.log(
-        `✅ SUCCESS: Screen scheme ${index + 1} deleted successfully: ${
-          screenScheme.name
-        }`
+      spinner.success(
+        `Screen scheme ${index + 1} deleted successfully: ${screenScheme.name}`
       );
       successCount++;
     } else {
-      console.error(
-        `❌ ERROR: Failed to delete screen scheme ${index + 1}: ${
-          screenScheme.name
-        } - ${deleteScreenScheme.error}`
+      spinner.error(
+        `Failed to delete screen scheme ${index + 1}: ${screenScheme.name} - ${
+          deleteScreenScheme.error
+        }`
       );
       errorCount++;
     }

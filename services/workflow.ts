@@ -18,7 +18,7 @@ export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
   });
 
   if (!firstPage.success) {
-    console.error("❌ ERROR: Failed to fetch workflows:", firstPage.error);
+    spinner.error(`Failed to fetch workflows: ${firstPage.error}`);
     return firstPage;
   }
 
@@ -29,9 +29,7 @@ export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
 
   if (total > firstValues.length) {
     const totalPages = Math.ceil(total / maxResults);
-    console.log(
-      `🔄 LOADING: Fetching remaining ${totalPages - 1} pages of workflows...`
-    );
+    spinner.start(`Fetching remaining ${totalPages - 1} pages of workflows...`);
 
     const pageIndexes = Array.from({ length: totalPages - 1 }, (_, i) => i + 1);
     const pagePromises = pageIndexes.map((pageIndex) =>
@@ -43,29 +41,29 @@ export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
-        console.error("❌ ERROR: Failed to fetch workflow page:", page.error);
+        spinner.error(`Failed to fetch workflow page: ${page.error}`);
         return page;
       }
       allWorkflows = allWorkflows.concat(page.data?.values ?? []);
     }
   }
 
-  console.log(
-    `✅ SUCCESS: Workflows fetched successfully (${allWorkflows.length} workflows found)`
+  spinner.success(
+    `Workflows fetched successfully (${allWorkflows.length} workflows found)`
   );
 
   if (allWorkflows.length === 0) {
-    console.log("ℹ️  INFO: No workflows found to delete");
+    spinner.info("No workflows found to delete");
     return;
   }
 
-  console.log("🔄 LOADING: Starting workflow deletion process...");
+  console.log("Starting workflow deletion process...");
   let successCount = 0;
   let errorCount = 0;
 
   for (const [index, workflow] of allWorkflows.entries()) {
-    console.log(
-      `🔄 LOADING: Deleting workflow ${index + 1}/${allWorkflows.length}: ${
+    spinner.start(
+      `Deleting workflow ${index + 1}/${allWorkflows.length}: ${
         workflow.id.name
       }`
     );
@@ -73,17 +71,15 @@ export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
       entityId: workflow.id.entityId!,
     });
     if (deleteWorkflow.success) {
-      console.log(
-        `✅ SUCCESS: Workflow ${index + 1} deleted successfully: ${
-          workflow.id.name
-        }`
+      spinner.success(
+        `Workflow ${index + 1} deleted successfully: ${workflow.id.name}`
       );
       successCount++;
     } else {
-      console.error(
-        `❌ ERROR: Failed to delete workflow ${index + 1}: ${
-          workflow.id.name
-        } - ${deleteWorkflow.error}`
+      spinner.error(
+        `Failed to delete workflow ${index + 1}: ${workflow.id.name} - ${
+          deleteWorkflow.error
+        }`
       );
       errorCount++;
     }
