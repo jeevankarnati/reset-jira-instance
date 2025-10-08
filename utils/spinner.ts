@@ -66,7 +66,23 @@ export class Spinner {
     process.stdout.cursorTo(0);
     process.stdout.clearLine(0);
     process.stdout.write("\x1b[?25h"); // Show cursor
-    process.stdout.write(`\x1b[31m✗\x1b[0m ${message}\n`);
+
+    // Split message at the last " - " to separate main message from error details
+    const lastDashIndex = message.lastIndexOf(" - ");
+    if (lastDashIndex !== -1) {
+      const mainMessage = message.substring(0, lastDashIndex);
+      const errorDetails = message.substring(lastDashIndex + 3);
+
+      // Show main message with red X
+      process.stdout.write(`\x1b[31m✗\x1b[0m ${mainMessage}\n`);
+
+      // Show error details on next line with dim red color
+      process.stdout.write(`\x1b[31m\x1b[2m  Error: ${errorDetails}\x1b[0m\n`);
+    } else {
+      // Fallback to original behavior if no " - " separator found
+      process.stdout.write(`\x1b[31m✗\x1b[0m ${message}\n`);
+    }
+
     this.lastOutputLength = 0;
   }
 
