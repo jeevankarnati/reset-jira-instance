@@ -18,7 +18,9 @@ export const resetScreenSchemes = async (jiraClient: DefaultJiraClientType) => {
   });
 
   if (!firstPage.success) {
-    spinner.error(`Failed to fetch screen schemes: ${firstPage.error}`);
+    spinner.error(
+      `Failed to fetch screen schemes: ${JSON.stringify(firstPage.error)}`
+    );
     return firstPage;
   }
 
@@ -43,7 +45,9 @@ export const resetScreenSchemes = async (jiraClient: DefaultJiraClientType) => {
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
-        spinner.error(`Failed to fetch screen scheme page: ${page.error}`);
+        spinner.error(
+          `Failed to fetch screen scheme page: ${JSON.stringify(page.error)}`
+        );
         return page;
       }
       allScreenSchemes = allScreenSchemes.concat(page.data?.values ?? []);
@@ -80,9 +84,9 @@ export const resetScreenSchemes = async (jiraClient: DefaultJiraClientType) => {
       successCount++;
     } else {
       spinner.error(
-        `Failed to delete screen scheme ${index + 1}: ${screenScheme.name} - ${
-          deleteScreenScheme.error
-        }`
+        `Failed to delete screen scheme ${index + 1}: ${
+          screenScheme.name
+        } - ${JSON.stringify(deleteScreenScheme.error)}`
       );
       errorCount++;
     }

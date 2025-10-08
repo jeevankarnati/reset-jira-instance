@@ -19,7 +19,9 @@ export const resetCustomFields = async (jiraClient: DefaultJiraClientType) => {
   });
 
   if (!firstPage.success) {
-    spinner.error(`Failed to fetch custom fields: ${firstPage.error}`);
+    spinner.error(
+      `Failed to fetch custom fields: ${JSON.stringify(firstPage.error)}`
+    );
     return firstPage;
   }
 
@@ -45,7 +47,9 @@ export const resetCustomFields = async (jiraClient: DefaultJiraClientType) => {
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
-        spinner.error(`Failed to fetch custom field page: ${page.error}`);
+        spinner.error(
+          `Failed to fetch custom field page: ${JSON.stringify(page.error)}`
+        );
         return page;
       }
       allCustomFields = allCustomFields.concat(page.data?.values ?? []);
@@ -81,9 +85,9 @@ export const resetCustomFields = async (jiraClient: DefaultJiraClientType) => {
       successCount++;
     } else {
       spinner.error(
-        `Failed to delete custom field ${index + 1}: ${customField.name} - ${
-          deleteCustomField.error
-        }`
+        `Failed to delete custom field ${index + 1}: ${
+          customField.name
+        } - ${JSON.stringify(deleteCustomField.error)}`
       );
       errorCount++;
     }

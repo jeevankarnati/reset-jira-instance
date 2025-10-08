@@ -53,7 +53,7 @@ export const resetAllProjects = async (jiraClient: DefaultJiraClientType) => {
         spinner.error(
           `Failed to delete project ${index + 1}: ${project.name} (${
             project.key
-          }) - ${deleteProject.error}`
+          }) - ${JSON.stringify(deleteProject.error)}`
         );
         errorCount++;
       }

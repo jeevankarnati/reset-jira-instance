@@ -20,7 +20,9 @@ export const resetIssueTypeSchemes = async (
   });
 
   if (!firstPage.success) {
-    spinner.error(`Failed to fetch issue type schemes: ${firstPage.error}`);
+    spinner.error(
+      `Failed to fetch issue type schemes: ${JSON.stringify(firstPage.error)}`
+    );
     return firstPage;
   }
 
@@ -45,7 +47,11 @@ export const resetIssueTypeSchemes = async (
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
-        spinner.error(`Failed to fetch issue type scheme page: ${page.error}`);
+        spinner.error(
+          `Failed to fetch issue type scheme page: ${JSON.stringify(
+            page.error
+          )}`
+        );
         return page;
       }
       allIssueTypeSchemes = allIssueTypeSchemes.concat(page.data?.values ?? []);
@@ -86,7 +92,7 @@ export const resetIssueTypeSchemes = async (
       spinner.error(
         `Failed to delete issue type scheme ${index + 1}: ${
           issueTypeScheme.name
-        } - ${deleteIssueTypeScheme.error}`
+        } - ${JSON.stringify(deleteIssueTypeScheme.error)}`
       );
       errorCount++;
     }

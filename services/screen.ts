@@ -18,7 +18,9 @@ export const resetScreens = async (jiraClient: DefaultJiraClientType) => {
   });
 
   if (!firstPage.success) {
-    spinner.error(`Failed to fetch screens: ${firstPage.error}`);
+    spinner.error(
+      `Failed to fetch screens: ${JSON.stringify(firstPage.error)}`
+    );
     return firstPage;
   }
 
@@ -41,7 +43,9 @@ export const resetScreens = async (jiraClient: DefaultJiraClientType) => {
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
-        spinner.error(`Failed to fetch screen page: ${page.error}`);
+        spinner.error(
+          `Failed to fetch screen page: ${JSON.stringify(page.error)}`
+        );
         return page;
       }
       allScreens = allScreens.concat(page.data?.values ?? []);
@@ -75,9 +79,9 @@ export const resetScreens = async (jiraClient: DefaultJiraClientType) => {
       successCount++;
     } else {
       spinner.error(
-        `Failed to delete screen ${index + 1}: ${screen.name} - ${
-          deleteScreen.error
-        }`
+        `Failed to delete screen ${index + 1}: ${
+          screen.name
+        } - ${JSON.stringify(deleteScreen.error)}`
       );
       errorCount++;
     }

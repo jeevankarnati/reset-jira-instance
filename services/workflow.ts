@@ -18,7 +18,9 @@ export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
   });
 
   if (!firstPage.success) {
-    spinner.error(`Failed to fetch workflows: ${firstPage.error}`);
+    spinner.error(
+      `Failed to fetch workflows: ${JSON.stringify(firstPage.error)}`
+    );
     return firstPage;
   }
 
@@ -41,7 +43,9 @@ export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
-        spinner.error(`Failed to fetch workflow page: ${page.error}`);
+        spinner.error(
+          `Failed to fetch workflow page: ${JSON.stringify(page.error)}`
+        );
         return page;
       }
       allWorkflows = allWorkflows.concat(page.data?.values ?? []);
@@ -77,9 +81,9 @@ export const resetWorkflows = async (jiraClient: DefaultJiraClientType) => {
       successCount++;
     } else {
       spinner.error(
-        `Failed to delete workflow ${index + 1}: ${workflow.id.name} - ${
-          deleteWorkflow.error
-        }`
+        `Failed to delete workflow ${index + 1}: ${
+          workflow.id.name
+        } - ${JSON.stringify(deleteWorkflow.error)}`
       );
       errorCount++;
     }

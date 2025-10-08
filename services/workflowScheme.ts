@@ -20,7 +20,9 @@ export const resetWorkflowSchemes = async (
   });
 
   if (!firstPage.success) {
-    spinner.error(`Failed to fetch workflow schemes: ${firstPage.error}`);
+    spinner.error(
+      `Failed to fetch workflow schemes: ${JSON.stringify(firstPage.error)}`
+    );
     return firstPage;
   }
 
@@ -45,7 +47,9 @@ export const resetWorkflowSchemes = async (
     const pages = await Promise.all(pagePromises);
     for (const page of pages) {
       if (!page.success) {
-        spinner.error(`Failed to fetch workflow scheme page: ${page.error}`);
+        spinner.error(
+          `Failed to fetch workflow scheme page: ${JSON.stringify(page.error)}`
+        );
         return page;
       }
       allWorkflowSchemes = allWorkflowSchemes.concat(page.data?.values ?? []);
@@ -86,7 +90,7 @@ export const resetWorkflowSchemes = async (
       spinner.error(
         `Failed to delete workflow scheme ${index + 1}: ${
           workflowScheme.name
-        } - ${deleteWorkflowScheme.error}`
+        } - ${JSON.stringify(deleteWorkflowScheme.error)}`
       );
       errorCount++;
     }

@@ -22,7 +22,9 @@ export const resetIssueTypeScreenSchemes = async (
 
   if (!firstPage.success) {
     spinner.error(
-      `Failed to fetch issue type screen schemes: ${firstPage.error}`
+      `Failed to fetch issue type screen schemes: ${JSON.stringify(
+        firstPage.error
+      )}`
     );
     return firstPage;
   }
@@ -51,7 +53,9 @@ export const resetIssueTypeScreenSchemes = async (
     for (const page of pages) {
       if (!page.success) {
         spinner.error(
-          `Failed to fetch issue type screen scheme page: ${page.error}`
+          `Failed to fetch issue type screen scheme page: ${JSON.stringify(
+            page.error
+          )}`
         );
         return page;
       }
@@ -98,7 +102,7 @@ export const resetIssueTypeScreenSchemes = async (
       spinner.error(
         `Failed to delete issue type screen scheme ${index + 1}: ${
           issueTypeScreenScheme.name
-        } - ${deleteIssueTypeScreenScheme.error}`
+        } - ${JSON.stringify(deleteIssueTypeScreenScheme.error)}`
       );
       errorCount++;
     }
